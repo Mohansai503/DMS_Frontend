@@ -1,3 +1,44 @@
+
+# Document Manegement System – DMS_Frontend
+
+This is the frontend project for **Document Manegement System**, built using:
+
+- ⚡ [Vite](https://vitejs.dev/) – blazing-fast dev server & build tool
+- ⚛️ React – for building user interfaces
+- 🟦 TypeScript – type-safe JavaScript
+
+## ✅ Prerequisites
+
+- Node.js **version 16 or higher**
+- npm (comes with Node.js)
+
+Check Node.js version:
+```bash
+node -v
+```
+
+Download: https://nodejs.org
+
+---
+
+## 🚀 Getting Started
+
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Start Development Server
+
+```bash
+npm run dev
+```
+
+Visit: http://localhost:5173
+
+---
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
