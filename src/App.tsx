@@ -23,7 +23,6 @@ function App() {
             <Route path='/Upload' element={<Upload/>}></Route>
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/regsuccess" element={<RegSuccess />} />
-            <Route path='/s' element={<SuccessPage/>}></Route>
             <Route path='/regfail' element={<RegFailure/>}></Route>
             <Route path='/loginsuccess' element={<LoginSuccess/>}></Route>
             <Route path='/loginfail' element={<LoginFailure/>}></Route>
