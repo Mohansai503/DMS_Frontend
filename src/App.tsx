@@ -15,7 +15,7 @@ function App() {
           <Routes>
             <Route path='/reg' element={<Registration/>}></Route>
             <Route path='/login' element={<Login/>}></Route>
-            <Route path='/Upload' element={<Upload/>}></Route>
+            <Route path='/upload' element={<Upload/>}></Route>
             <Route path="/" element={<Navigate to="/login" replace />} />
           </Routes>
         </div>
