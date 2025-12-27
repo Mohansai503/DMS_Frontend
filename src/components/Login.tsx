@@ -49,11 +49,12 @@ const Login = () => {
                 const response = await fetch(
                     `http://localhost:8080/otpapi/genlogotp?email=${email}`
                 );
-        
-                 if (!response.ok) {
+
+                if (!response.ok) {
                     const msg = await response.text();
-                    alert(msg);
-                     return;
+                    //alert(msg);
+                    navigate("/loginfail");
+                    return;
                 }       
         
             const backendOtp = await response.text();
@@ -93,8 +94,6 @@ const Login = () => {
         }
 
         try {
-
-            //Verify OTP with backend before login.
             const verifyResponse = await fetch(
                 `http://localhost:8080/otpapi/verify?email=${email}&otp=${otp}`,
                 { method: "POST" }
@@ -103,16 +102,14 @@ const Login = () => {
             const msg = await verifyResponse.text();
             alert(msg);
 
-
             if (verifyResponse.ok) {
-                alert("Login successful.!");
-                setOtpVerified(true);
-                navigate("/upload");
+                navigate("/loginsuccess");
+            } else {
+                navigate("/loginfail");
             }
 
         } catch (error) {
-            console.error("Login error:", error);
-            alert("Login failed");
+            navigate("/loginfail");
         }
 
     }

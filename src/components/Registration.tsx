@@ -63,7 +63,8 @@ const Registration = () => {
 
                 if (!response.ok) {
                     const msg = await response.text();
-                    alert(msg);
+                    //alert(msg);
+                    navigate("/regfail");
                     return;
                 }
 
@@ -119,14 +120,13 @@ const Registration = () => {
 
 
             if (verifyResponse.ok) {
-                alert("Registration successful.!");
-            setOtpVerified(true);
-            navigate("/login");
-        }
+                navigate("/regsuccess");
+            }else {
+                navigate("/regfail");
+            }
 
         } catch (error) {
-            console.error("Registration error:", error);
-            alert("Registration failed");
+            navigate("/regfail");
         }
 
     }

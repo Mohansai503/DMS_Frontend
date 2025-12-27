@@ -4,6 +4,10 @@ import './App.css'
 import Registration from './components/Registration';
 import Login from './components/Login';
 import Upload from "./components/UploadDoc";
+import RegSuccess from './components/RegSuccess';
+import RegFailure from './components/RegFailure';
+import LoginSuccess from './components/Loginsuccess';
+import LoginFailure from './components/LoginFailure';
  
 
 
@@ -17,6 +21,11 @@ function App() {
             <Route path='/login' element={<Login/>}></Route>
             <Route path='/upload' element={<Upload/>}></Route>
             <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/regsuccess" element={<RegSuccess />} />
+            <Route path='/regfail' element={<RegFailure/>}></Route>
+            <Route path='/loginsuccess' element={<LoginSuccess/>}></Route>
+            <Route path='/loginfail' element={<LoginFailure/>}></Route>
+            
           </Routes>
         </div>
       </Router>
