@@ -8,6 +8,8 @@ import RegSuccess from './components/RegSuccess';
 import RegFailure from './components/RegFailure';
 import LoginSuccess from './components/Loginsuccess';
 import LoginFailure from './components/LoginFailure';
+import HomePage from './components/HomePage';
+import RecentPage from './components/RecentPage';
  
 
 
@@ -25,6 +27,8 @@ function App() {
             <Route path='/regfail' element={<RegFailure/>}></Route>
             <Route path='/loginsuccess' element={<LoginSuccess/>}></Route>
             <Route path='/loginfail' element={<LoginFailure/>}></Route>
+            <Route path="/homepage" element={<HomePage/>} />
+            <Route path="/recentpage" element={<RecentPage/>} />
             
           </Routes>
         </div>
