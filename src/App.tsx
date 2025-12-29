@@ -1,10 +1,16 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
 import Registration from './components/Registration';
 import Login from './components/Login';
 import TrashPage from './components/TrashPage';
 import SearchBar from './components/SearchBar';
+import Upload from "./components/UploadDoc";
+import RegSuccess from './components/RegSuccess';
+import RegFailure from './components/RegFailure';
+import LoginSuccess from './components/Loginsuccess';
+import LoginFailure from './components/LoginFailure';
+
 
 
 function App() {
@@ -19,6 +25,13 @@ function App() {
             <Route path='/search' element={<SearchBar value={''} onChange={function (event: React.ChangeEvent<HTMLInputElement>): void {
               throw new Error('Function not implemented.');
             } }/>}></Route>
+            <Route path='/upload' element={<Upload/>}></Route>
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/regsuccess" element={<RegSuccess />} />
+            <Route path='/regfail' element={<RegFailure/>}></Route>
+            <Route path='/loginsuccess' element={<LoginSuccess/>}></Route>
+            <Route path='/loginfail' element={<LoginFailure/>}></Route>
+            
           </Routes>
         </div>
       </Router>

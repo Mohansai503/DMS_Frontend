@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {useNavigate} from 'react-router-dom';
+import emailjs from "emailjs-com";
 
 const Registration = () => {
 
@@ -47,43 +48,54 @@ const Registration = () => {
         return "";
     }
 
-    //OTP sending 
-    const sendOtp = () => {
+    // OTP sending
+    const sendOtp = async () => {
         const emailError = validateEmail(email);
         setErrors((prevErrors) => ({ ...prevErrors, email: emailError || undefined }));
-        if(emailError) {
-            return;
-        }
 
-        try {
-            //API Call for sending OTP to email ID.
-            console.log('Sending OTP to', email);
-            setOtpSent(true);
-            setOtpVerified(false);
-        } catch (error) {
-            console.error('Failed sending OTP:', error);
-        }
+        if (emailError) return;
 
-    }
+            try {
+                //Call backend controller to generate OTP
+                const response = await fetch(
+                    `http://localhost:8080/otpapi/generate?email=${email}&userName=${username}`
+                );
 
-    //OTP Verification
-    const verifyOtp = () => {
-        const otpEerror = validateOtp(otp);
-        setErrors((prevErrors) => ({ ...prevErrors, otp: otpEerror || undefined }));
-        if(otpEerror) {
-            return;
-        }
-        try {
-            //API Call for verifying OTP
-            console.log('Verifying OTP', otp);
-            setOtpVerified(true);
-        } catch (error) {
-            console.error('Failed verifying OTP:', error);
-        }  
-    }
+                if (!response.ok) {
+                    const msg = await response.text();
+                    //alert(msg);
+                    navigate("/regfail");
+                    return;
+                }
+
+                const backendOtp = await response.text();
+
+                //Send OTP using EmailJS
+                const templateParams = {
+                    to_email: email,
+                    otp: backendOtp
+                };
+
+                await emailjs.send(
+                    "service_ya75vo6",
+                    "template_hivulbq",
+                    templateParams,
+                    "YTk8-jrq6IfbGg5Sp"
+                );
+
+                console.log("OTP sent successfully to", email);
+                alert("OTP sent to your email!");
+                setOtpSent(true);
+                setOtpVerified(false);
+
+            } catch (error) {
+                console.error("Failed sending OTP:", error);
+                alert("Failed to send OTP");
+            }
+    };
 
     //Form Submission Handler.
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const usernameError = validateUsername(username);
         const emailError = validateEmail(email);
@@ -93,6 +105,28 @@ const Registration = () => {
 
         if(usernameError || emailError || otpEerror) {
             return;
+        }
+
+        try {
+
+            //Verify OTP with backend before registration.
+            const verifyResponse = await fetch(
+                `http://localhost:8080/otpapi/verify?email=${email}&otp=${otp}`,
+                { method: "POST" }
+            );
+
+            const msg = await verifyResponse.text();
+            alert(msg);
+
+
+            if (verifyResponse.ok) {
+                navigate("/regsuccess");
+            }else {
+                navigate("/regfail");
+            }
+
+        } catch (error) {
+            navigate("/regfail");
         }
 
     }
@@ -121,14 +155,14 @@ const Registration = () => {
                 </div>
 
                 <div className="mb-3 row gx-2 align-items-start">
-                    <div className="col-8">
+                    <div className="mb-3">
                         <input type='otp' value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="Enter OTP" className='form-control'/>
                         <small className="text-danger d-block" style={{ minHeight: "18px" }}>{errors.otp}</small>
                         {otpVerified && <small className="text-success d-block">OTP Verified Successfully!</small>}
                     </div>
-                    <div className="col-4">
+                    {/* <div className="col-4">
                         <button type='button' onClick={verifyOtp} className='btn btn-success w-100' disabled={!otpSent}>Verify OTP</button>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="mb-3">
                     <input type='submit' value="Register" className='btn btn-primary w-100'/>
