@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const LoginSuccess = () => {
   const navigate = useNavigate(); 
   const handleContinueClick = () => {
-    navigate("/Upload"); 
+    navigate("/homepage"); 
 }
   return (
     <div
