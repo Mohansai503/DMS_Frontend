@@ -4,7 +4,8 @@ import './App.css'
 import Registration from './components/Registration';
 import Login from './components/Login';
 import Upload from "./components/UploadDoc";
- 
+import EmptyPage from "./components/EmptyPage";
+//import NewFolderModal from "./components/NewFolderModal";
 
 
 function App() {
@@ -16,6 +17,8 @@ function App() {
             <Route path='/reg' element={<Registration/>}></Route>
             <Route path='/login' element={<Login/>}></Route>
             <Route path='/Upload' element={<Upload/>}></Route>
+            <Route path='/emp' element={<EmptyPage/>}></Route>
+
             <Route path="/" element={<Navigate to="/login" replace />} />
           </Routes>
         </div>
