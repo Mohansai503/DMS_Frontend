@@ -4,8 +4,13 @@ import './App.css'
 import Registration from './components/Registration';
 import Login from './components/Login';
 import Upload from "./components/UploadDoc";
-import EmptyPage from "./components/EmptyPage";
-//import NewFolderModal from "./components/NewFolderModal";
+import RegSuccess from './components/RegSuccess';
+import RegFailure from './components/RegFailure';
+import LoginSuccess from './components/Loginsuccess';
+import LoginFailure from './components/LoginFailure';
+import HomePage from './components/HomePage';
+import RecentPage from './components/RecentPage';
+ 
 
 
 function App() {
@@ -16,10 +21,15 @@ function App() {
           <Routes>
             <Route path='/reg' element={<Registration/>}></Route>
             <Route path='/login' element={<Login/>}></Route>
-            <Route path='/Upload' element={<Upload/>}></Route>
-            <Route path='/emp' element={<EmptyPage/>}></Route>
-
+            <Route path='/upload' element={<Upload/>}></Route>
             <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/regsuccess" element={<RegSuccess />} />
+            <Route path='/regfail' element={<RegFailure/>}></Route>
+            <Route path='/loginsuccess' element={<LoginSuccess/>}></Route>
+            <Route path='/loginfail' element={<LoginFailure/>}></Route>
+            <Route path="/homepage" element={<HomePage/>} />
+            <Route path="/recentpage" element={<RecentPage/>} />
+            
           </Routes>
         </div>
       </Router>
