@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 
 const Home = () => {
-  const [active, setActive] = useState("home",);
+  const [active, setActive] = useState("home","new folder");
+  
 
   const navigate = useNavigate();
 
@@ -19,17 +20,16 @@ const Home = () => {
       <div className="w-60 bg-white border-r px-4 py-6">
         <h1 className="text-3xl font-extrabold mb-6">DMS</h1>
 
-        <button className="w-full mb-6 flex items-center gap-2 rounded-xl border bg-white px-4 py-2 shadow hover:bg-gray-50 " >
-          ➕ New
-        </button>
+       
         <div className="space-y-2">
-          {["home", "recent", "trash"].map((item) => (
+          {["home", "recent", "trash","➕ New"].map((item) => (
             <button
               key={item}
               onClick={() => {setActive(item);
                  if (item === "recent" ) {
                   navigate("/recentpage");
                   }
+                  
 
               }}
               className={`w-full flex items-center gap-3 rounded-full px-4 py-2 capitalize ${
