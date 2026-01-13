@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./animations.css";
 import "../index.css";
 
@@ -18,6 +19,9 @@ const RecentPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
+  const [active, setActive] = useState("recent");
+  
+  const navigate = useNavigate();
 
   
   useEffect(() => {
@@ -119,19 +123,38 @@ const RecentPage = () => {
           DMS
         </h1>
 
-        <button className="w-full mb-6 flex items-center gap-2 rounded-xl border bg-white px-4 py-2 shadow hover:bg-gray-50" style={{
-          width: '80%',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          borderRadius: '9999px',
-          padding: '4px 8px',
-          backgroundColor: '#fef3c7',
-          fontWeight: '500',
-          fontSize: '14px'
-        }}>
-          Recent
-        </button>
+        <div className="space-y-2" style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
+          {["home", "recent", "trash","➕ New"].map((item) => (
+            <button
+              key={item}
+              onClick={() => {
+                setActive(item);
+                if (item === "home") {
+                  navigate("/homepage");
+                }
+              }}
+              className={`w-full flex items-center gap-3 rounded-full px-4 py-2 capitalize ${
+                active === item
+                  ? "bg-yellow-100 font-medium"
+                  : "hover:bg-gray-100"
+              }`}
+              style={{
+                width: '60%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                borderRadius: '9999px',
+                padding: '4px 8px',
+                textTransform: 'capitalize',
+                backgroundColor: active === item ? '#fef3c7' : 'transparent',
+                fontWeight: active === item ? '500' : 'normal',
+                fontSize: '14px'
+              }}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Main Content */}
@@ -192,7 +215,7 @@ const RecentPage = () => {
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       padding: '12px',
-                      border: '1px solid #d1d5db',
+                      border: '1px solid #d1dbdb94',
                       borderRadius: '8px',
                       backgroundColor: 'white',
                       marginBottom: '8px'
