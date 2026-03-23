@@ -36,7 +36,7 @@ function App() {
 
             <Route path='/homepage' element={<HomePage/>}></Route>
            <Route path='/demologin' element={<DemoGreeting/>}></Route> 
-=======
+            <Route path='/recent' element={<RecentPage/>}></Route>
            
             
 
