@@ -58,7 +58,15 @@ const Registration = () => {
             try {
                 //Call backend controller to generate OTP
                 const response = await fetch(
-                    `http://localhost:8080/otpapi/generate?email=${email}&userName=${username}`
+                    `http://localhost:8080/registration/send-otp`,
+                    { 
+                        method: "POST" ,
+                        headers : {
+                            "Content-type" : "application/json"
+                        }
+                     ,
+                     body : JSON.stringify({userEmailId: email, userName: username} )
+                    }
                 );
 
                 if (!response.ok) {
@@ -76,17 +84,17 @@ const Registration = () => {
                     otp: backendOtp
                 };
 
-                await emailjs.send(
-                    "service_ya75vo6",
-                    "template_hivulbq",
-                    templateParams,
-                    "YTk8-jrq6IfbGg5Sp"
-                );
+                // await emailjs.send(
+                //     "service_ya75vo6",
+                //     "template_hivulbq",
+                //     templateParams,
+                //     "YTk8-jrq6IfbGg5Sp"
+                // );
 
-                console.log("OTP sent successfully to", email);
-                alert("OTP sent to your email!");
-                setOtpSent(true);
-                setOtpVerified(false);
+                // console.log("OTP sent successfully to", email);
+                // alert("OTP sent to your email!");
+                // setOtpSent(true);
+                // setOtpVerified(false);
 
             } catch (error) {
                 console.error("Failed sending OTP:", error);
@@ -111,8 +119,14 @@ const Registration = () => {
 
             //Verify OTP with backend before registration.
             const verifyResponse = await fetch(
-                `http://localhost:8080/otpapi/verify?email=${email}&otp=${otp}`,
-                { method: "POST" }
+                `http://localhost:8080/registration/verify-otp`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ email, otp })
+                }
             );
 
             const msg = await verifyResponse.text();
