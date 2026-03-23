@@ -60,21 +60,21 @@ const Upload: React.FC = () => {
 
       const file = selectedFile;
 
-      // const sizeInMB = (file.size / (1024 * 1024)).toFixed(2) + "MB";
+      const sizeInMB = (file.size / (1024 * 1024)).toFixed(2) + "MB";
 
-      // const today = new Date()
-      //   .toLocaleDateString("en-GB")
-      //   .replace(/\//g, "-");
+      const today = new Date()
+        .toLocaleDateString("en-GB")
+        .replace(/\//g, "-");
 
       const formData = new FormData();
       formData.append("file", file); // must match @RequestParam("file")
       formData.append("documentType", file.type || "UNKNOWN");
-      // formData.append("docName", file.name);
-      // formData.append("size", sizeInMB);
-      // formData.append("docUploadDate", today);
-      formData.append("userId", 1);
+      formData.append("docName", file.name);
+      formData.append("size", sizeInMB);
+      formData.append("docUploadDate", today);
 
       const response = await fetch("http://localhost:8080/api/documents/upload", {
+                                 //"http://localhost:8080/api/documents/upload"
         method: "POST",
         body: formData,
       });

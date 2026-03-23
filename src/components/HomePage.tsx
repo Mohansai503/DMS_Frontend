@@ -3,8 +3,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 
-// *** CHANGED: Updated URL to fetch ALL documents from database instead of just user ID 4 ***
+
 const HomeUrl = "http://localhost:8080/api/documents/list/";
+
+const LogOutUrl = "http://localhost:8080/api/documents/logout";
 
 interface Document {
   id: number;
@@ -25,6 +27,21 @@ const Home = () => {
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   
   const navigate = useNavigate();
+
+  const handlelogout = async() =>{
+    try{
+      await fetch(LogOutUrl,{
+        method:"post",
+        credentials:"include",
+      })
+       localStorage.clear();
+      sessionStorage.clear();
+      navigate("/login")
+    }catch(error){
+      console.error("logoutfailed")
+    }
+
+  }
 
  
   useEffect(() => {
@@ -188,7 +205,7 @@ const Home = () => {
             <span className="absolute left-4 top-3 text-gray-500" style={{position: 'absolute', left: '16px', top: '12px', color: '#6b7280'}}>🔍</span>
           </div>
 
-          <button className="rounded-xl border bg-sky-50 px-5 py-2 text-sm font-medium hover:bg-yellow-100" style={{
+          <button onClick={handlelogout} className="rounded-xl border bg-sky-50 px-5 py-2 text-sm font-medium hover:bg-yellow-100" style={{
             borderRadius: '12px',
             border: '1px solid #e5e7eb',
             backgroundColor: '#f0f9ff',
@@ -239,7 +256,7 @@ const Home = () => {
               ) : (
                 documents.map((doc, index) => (
                   <div
-                    key={doc.id || index}
+                    key={doc.docId || index}
                     className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 bg-white"
                     style={{
                       display: 'flex',
@@ -267,14 +284,12 @@ const Home = () => {
                       <p className="text-sm text-gray-500 mb-1">
                         {doc.docUploadDate || doc.createdAt || 'Unknown date'}
                       </p>
-                      {/* Three Dots Button - Google Style */}
+                      
                       <button 
                         onClick={() => toggleDropdown(doc.docId || index)}
                         className="text-gray-600 hover:text-gray-800 p-2 rounded-full hover:bg-gray-100 transition-colors"
                         aria-label="More options"
-                      >
-                       
-                       Download
+                      > Download
                         {/* <svg 
                           className="w-5 h-5" 
                           fill="currentColor" 
@@ -284,8 +299,8 @@ const Home = () => {
                         </svg> */}
                       </button>
                       
-                      {/* Dropdown Menu */}
-                      {openDropdown === (doc.id || index) && (
+                     
+                      {openDropdown === (doc.docId || index) && (
                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border z-20 animate-in fade-in duration-200">
                           <div className="py-1">
                             <button
