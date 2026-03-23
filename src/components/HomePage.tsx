@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 
 // *** CHANGED: Updated URL to fetch ALL documents from database instead of just user ID 4 ***
-const HomeUrl = "http://localhost:8080/api/documents/list/4";
+const HomeUrl = "http://localhost:8080/api/documents/list/";
 
 interface Document {
   id: number;
@@ -35,10 +35,11 @@ const Home = () => {
         
         console.log("Attempting to fetch from:", HomeUrl);
         
-        const response = await fetch(HomeUrl, {
+        const response = await fetch(HomeUrl + localStorage.getItem("userId"), {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
+    "Authorization" : 'Bearer ' + localStorage.getItem("token"),
   },
   body: JSON.stringify({
     type: "home"   
@@ -255,30 +256,32 @@ const Home = () => {
                       <div className="text-2xl">📄</div>
                       <div>
                         <h4 className="font-medium text-gray-900">
-                          {doc.name || doc.title || `Document ${doc.id}`}
+                          {doc.docName  || `Document ${doc.docId}`}
                         </h4>
                         <p className="text-sm text-gray-500">
-                          {doc.type || 'Unknown type'} • {doc.size || 'Unknown size'}
+                          {doc.documentType || 'Unknown type'} • {doc.docSize || 'Unknown size'}
                         </p>
                       </div>
                     </div>
                     <div className="text-right relative dropdown-container">
                       <p className="text-sm text-gray-500 mb-1">
-                        {doc.uploadDate || doc.createdAt || 'Unknown date'}
+                        {doc.docUploadDate || doc.createdAt || 'Unknown date'}
                       </p>
                       {/* Three Dots Button - Google Style */}
                       <button 
-                        onClick={() => toggleDropdown(doc.id || index)}
+                        onClick={() => toggleDropdown(doc.docId || index)}
                         className="text-gray-600 hover:text-gray-800 p-2 rounded-full hover:bg-gray-100 transition-colors"
                         aria-label="More options"
                       >
-                        <svg 
+                       
+                       Download
+                        {/* <svg 
                           className="w-5 h-5" 
                           fill="currentColor" 
                           viewBox="0 0 20 20"
                         >
                           <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                        </svg>
+                        </svg> */}
                       </button>
                       
                       {/* Dropdown Menu */}
