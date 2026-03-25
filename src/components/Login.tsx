@@ -47,17 +47,21 @@ const Login = () => {
             try {
                 //Call backend controller to generate OTP
                 const response = await fetch(
+
                     'http://localhost:8080/loginpage/send-otp',
                      { 
+
+                
+
                         method: "POST" ,
                         headers : {
-                            "Content-type" : "application/json"
+                            "Content-type" : "application/json",
                         }
                      ,
                      body : JSON.stringify({userEmailId: email} )
                     }
                 );
-
+             console.log(response);
                 if (!response.ok) {
                     const msg = await response.text();
                     //alert(msg);
@@ -77,10 +81,13 @@ const Login = () => {
             //     "YTk8-jrq6IfbGg5Sp"
             // );
         
-            // console.log("OTP sent successfully to", email);
-            // alert("OTP sent to your email!");
-            // setOtpSent(true);
-            // setOtpVerified(false);
+
+
+            /*console.log("OTP sent successfully to", email);
+            alert("OTP sent to your email!");
+            setOtpSent(true);
+            setOtpVerified(false);*/
+
         
             } catch (error) {
                 console.error("Failed sending OTP:", error);
@@ -103,27 +110,38 @@ const Login = () => {
 
         try {
             const verifyResponse = await fetch(
-                 'http://localhost:8080/loginpage/verify-otp',
-                     { 
-                        method: "POST" ,
-                        headers : {
+
+
+                `http://localhost:8080/loginpage/verify-otp`,
+                { method: "POST" ,
+                    headers : {
+
                             "Content-type" : "application/json"
                         }
                      ,
                      body : JSON.stringify({email: email,
                                             otp: otp
                      } )
+
                     }
+
+                 
+
             );
+            
 
             const msg = await verifyResponse.json();
             console.log(msg);
+
            //* alert(msg);
            const accessToken = msg.token;
            const userId = msg.userId;
             console.log(accessToken);
             localStorage.setItem("token",accessToken);
             localStorage.setItem("userId",userId);
+
+        
+
 
             if (verifyResponse.ok) {
                 navigate("/loginsuccess");

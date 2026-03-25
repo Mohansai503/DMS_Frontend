@@ -30,42 +30,45 @@ const Home = () => {
 
   const handlelogout = async() =>{
     try{
-      await fetch(LogOutUrl,{
+      /*await fetch(LogOutUrl,{
         method:"post",
         credentials:"include",
-      })
+      })*/
        localStorage.clear();
-      sessionStorage.clear();
+     //* sessionStorage.clear();
       navigate("/login")
     }catch(error){
       console.error("logoutfailed")
     }
 
   }
-
  
   useEffect(() => {
+    if (!localStorage.getItem("token") || !localStorage.getItem("userId")) {
+          navigate("/login");
+        } 
     const fetchDocuments = async () => {
       try {
         setLoading(true);
         setError(null);
         
         console.log("Attempting to fetch from:", HomeUrl);
-        
-        const response = await fetch(HomeUrl + localStorage.getItem("userId"), {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    "Authorization" : 'Bearer ' + localStorage.getItem("token"),
-  },
-  body: JSON.stringify({
-    type: "home"   
-  })
-});
+ 
 
-
-        console.log("Response status:", response.status);
-        console.log("Response ok:", response.ok);
+          const response = await fetch(HomeUrl + localStorage.getItem("userId"), {
+            method: "POST",
+            headers: {
+         "Content-Type": "application/json",
+          "Authorization" : 'Bearer ' + localStorage.getItem("token"),
+           },
+            body: JSON.stringify({
+             type: "home"   
+  
+            })
+            
+        })         
+          console.log("Response status:", response.status);
+          console.log("Response ok:", response.ok);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -85,8 +88,9 @@ const Home = () => {
           // If it's a single document
           setDocuments([data]);
         }
+      
         
-      } catch (error) {
+       } catch (error) {
         console.error("Detailed error:", error);
         if (error instanceof TypeError && error.message.includes('fetch')) {
           setError("Cannot connect to server. Please check if the backend is running on http://localhost:8080");
@@ -96,13 +100,14 @@ const Home = () => {
       } finally {
         setLoading(false);
       }
-    };
+    }
+});
 
-    fetchDocuments();
-  }, []);
+    /*fetchDocuments();
+  }, []);*/
 
   // Close dropdown when clicking outside
-  useEffect(() => {
+  /*useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (!event.target) return;
       
@@ -118,7 +123,7 @@ const Home = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, []);*/
 
   const toggleDropdown = (docId: number) => {
     setOpenDropdown(openDropdown === docId ? null : docId);
