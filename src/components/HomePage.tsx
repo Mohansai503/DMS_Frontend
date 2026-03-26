@@ -34,8 +34,8 @@ const Home = () => {
         method:"post",
         credentials:"include",
       })*/
-       localStorage.clear();
-     //* sessionStorage.clear();
+       //localStorage.clear();
+      sessionStorage.clear();
       navigate("/login")
     }catch(error){
       console.error("logoutfailed")
@@ -44,7 +44,8 @@ const Home = () => {
   }
  
   useEffect(() => {
-    if (!localStorage.getItem("token") || !localStorage.getItem("userId")) {
+    console.log("use Effect started calling in home page:");
+    if (!sessionStorage.getItem("token") || !sessionStorage.getItem("userId")) {
           navigate("/login");
         } 
     const fetchDocuments = async () => {
@@ -55,11 +56,11 @@ const Home = () => {
         console.log("Attempting to fetch from:", HomeUrl);
  
 
-          const response = await fetch(HomeUrl + localStorage.getItem("userId"), {
+          const response = await fetch(HomeUrl + sessionStorage.getItem("userId"), {
             method: "POST",
             headers: {
          "Content-Type": "application/json",
-          "Authorization" : 'Bearer ' + localStorage.getItem("token"),
+          "Authorization" : 'Bearer ' + sessionStorage.getItem("token"),
            },
             body: JSON.stringify({
              type: "home"   
@@ -101,7 +102,8 @@ const Home = () => {
         setLoading(false);
       }
     }
-});
+    fetchDocuments();
+},[active]);
 
     /*fetchDocuments();
   }, []);*/
@@ -156,7 +158,7 @@ const Home = () => {
         <h1 className="text-3xl font-extrabold mb-6" style={{fontSize: '30px', fontWeight: '800', marginBottom: '24px'}}>DMS</h1>
 
         <div className="space-y-2" style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
-          {["home", "recent", "trash","➕ New"].map((item) => (
+          {["home", "recent", "trash","➕ New","last 30 days"].map((item) => (
             <button
               key={item}
               onClick={() => {
