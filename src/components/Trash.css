@@ -1,0 +1,15 @@
+.trash-page {
+min-height: 100vh; /* important */
+  background-image: url("../images/trashImage.png");
+  background-repeat: no-repeat;
+  background-size: 200px 200px;
+   background-color: #f1fcfd;
+  background-position: center 200px; /* center horizontally, push down */
+  padding-top: 40px;
+}
+table{
+  background-color: #f1fcfd;
+}
+.tr_tag{
+  padding: 25px !important;
+}

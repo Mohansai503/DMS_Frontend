@@ -8,9 +8,13 @@ import RegSuccess from './components/RegSuccess';
 import RegFailure from './components/RegFailure';
 import LoginSuccess from './components/Loginsuccess';
 import LoginFailure from './components/LoginFailure';
+import MyLogin from './components/MyLogin';
+import DemoGreeting from './components/DemoLogin';
 import HomePage from './components/HomePage';
+
+
 import RecentPage from './components/RecentPage';
- 
+
 
 
 function App() {
@@ -19,7 +23,9 @@ function App() {
       <Router>
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
           <Routes>
+            
             <Route path='/reg' element={<Registration/>}></Route>
+            <Route path="/mylogin" element={<MyLogin />} />
             <Route path='/login' element={<Login/>}></Route>
             <Route path='/upload' element={<Upload/>}></Route>
             <Route path="/" element={<Navigate to="/login" replace />} />
@@ -27,9 +33,19 @@ function App() {
             <Route path='/regfail' element={<RegFailure/>}></Route>
             <Route path='/loginsuccess' element={<LoginSuccess/>}></Route>
             <Route path='/loginfail' element={<LoginFailure/>}></Route>
-            <Route path="/homepage" element={<HomePage/>} />
-            <Route path="/recentpage" element={<RecentPage/>} />
+
+
+            <Route path='/homepage' element={<HomePage/>}></Route>
+           <Route path='/demologin' element={<DemoGreeting/>}></Route> 
+            <Route path='/recent' element={<RecentPage/>}></Route>
+           
+
+       
             
+          
+
+            
+
           </Routes>
         </div>
       </Router>

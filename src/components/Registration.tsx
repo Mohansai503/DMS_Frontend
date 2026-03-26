@@ -84,17 +84,17 @@ const Registration = () => {
                     otp: backendOtp
                 };
 
-                await emailjs.send(
-                    "service_ya75vo6",
-                    "template_hivulbq",
-                    templateParams,
-                    "YTk8-jrq6IfbGg5Sp"
-                );
+                // await emailjs.send(
+                //     "service_ya75vo6",
+                //     "template_hivulbq",
+                //     templateParams,
+                //     "YTk8-jrq6IfbGg5Sp"
+                // );
 
-                console.log("OTP sent successfully to", email);
-                alert("OTP sent to your email!");
-                setOtpSent(true);
-                setOtpVerified(false);
+                // console.log("OTP sent successfully to", email);
+                // alert("OTP sent to your email!");
+                // setOtpSent(true);
+                // setOtpVerified(false);
 
             } catch (error) {
                 console.error("Failed sending OTP:", error);
