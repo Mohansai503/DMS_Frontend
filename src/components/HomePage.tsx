@@ -4,11 +4,9 @@ import { useNavigate } from "react-router-dom";
 
 
 
-
 const HomeUrl = "http://localhost:8080/api/documents/list/";
 
 const LogOutUrl = "http://localhost:8080/api/documents/logout";
-
 
 interface Document {
   id: number;
@@ -32,13 +30,12 @@ const Home = () => {
 
   const handlelogout = async() =>{
     try{
-
       /*await fetch(LogOutUrl,{
         method:"post",
         credentials:"include",
       })*/
-       sessionStorage.clear();
-     //* sessionStorage.clear();
+       //localStorage.clear();
+      sessionStorage.clear();
       navigate("/login")
     }catch(error){
       console.error("logoutfailed")
@@ -47,6 +44,7 @@ const Home = () => {
   }
  
   useEffect(() => {
+    console.log("use Effect started calling in home page:");
     if (!sessionStorage.getItem("token") || !sessionStorage.getItem("userId")) {
           navigate("/login");
         } 
@@ -62,7 +60,7 @@ const Home = () => {
             method: "POST",
             headers: {
          "Content-Type": "application/json",
-          "Authorization" : 'Bearer ' + localStorage.getItem("token"),
+          "Authorization" : 'Bearer ' + sessionStorage.getItem("token"),
            },
             body: JSON.stringify({
              type: "home"   
@@ -104,8 +102,8 @@ const Home = () => {
         setLoading(false);
       }
     }
-    
-});
+    fetchDocuments();
+},[active]);
 
     /*fetchDocuments();
   }, []);*/
@@ -160,7 +158,7 @@ const Home = () => {
         <h1 className="text-3xl font-extrabold mb-6" style={{fontSize: '30px', fontWeight: '800', marginBottom: '24px'}}>DMS</h1>
 
         <div className="space-y-2" style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
-          {["home", "recent", "trash","➕ New"].map((item) => (
+          {["home", "recent", "trash","➕ New","last 30 days"].map((item) => (
             <button
               key={item}
               onClick={() => {
@@ -309,9 +307,7 @@ const Home = () => {
                       </button>
                       
                      
-
                       {openDropdown === (doc.docId || index) && (
-
                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border z-20 animate-in fade-in duration-200">
                           <div className="py-1">
                             <button
