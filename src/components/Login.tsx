@@ -137,11 +137,8 @@ const Login = () => {
            const accessToken = msg.token;
            const userId = msg.userId;
             console.log(accessToken);
-            localStorage.setItem("token",accessToken);
-            localStorage.setItem("userId",userId);
-
-        
-
+            sessionStorage.setItem("token",accessToken);
+            sessionStorage.setItem("userId",userId);
 
             if (verifyResponse.ok) {
                 navigate("/loginsuccess");

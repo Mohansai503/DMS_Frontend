@@ -3,8 +3,12 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 
-// *** CHANGED: Updated URL to fetch ALL documents from database instead of just user ID 4 ***
-const HomeUrl = "http://localhost:8080/api/documents/list/4";
+
+
+const HomeUrl = "http://localhost:8080/api/documents/list/";
+
+const LogOutUrl = "http://localhost:8080/api/documents/logout";
+
 
 interface Document {
   id: number;
@@ -26,9 +30,24 @@ const Home = () => {
   
   const navigate = useNavigate();
 
+  const handlelogout = async() =>{
+    try{
+
+      /*await fetch(LogOutUrl,{
+        method:"post",
+        credentials:"include",
+      })*/
+       sessionStorage.clear();
+     //* sessionStorage.clear();
+      navigate("/login")
+    }catch(error){
+      console.error("logoutfailed")
+    }
+
+  }
  
   useEffect(() => {
-    if (!localStorage.getItem("token") || !localStorage.getItem("userId")) {
+    if (!sessionStorage.getItem("token") || !sessionStorage.getItem("userId")) {
           navigate("/login");
         } 
     const fetchDocuments = async () => {
@@ -39,7 +58,7 @@ const Home = () => {
         console.log("Attempting to fetch from:", HomeUrl);
  
 
-          const response = await fetch(HomeUrl + localStorage.getItem("userId"), {
+          const response = await fetch(HomeUrl + sessionStorage.getItem("userId"), {
             method: "POST",
             headers: {
          "Content-Type": "application/json",
@@ -85,7 +104,8 @@ const Home = () => {
         setLoading(false);
       }
     }
-});
+  fetchDocuments();
+},[active]);
 
     /*fetchDocuments();
   }, []);*/
@@ -288,8 +308,10 @@ const Home = () => {
                         </svg> */}
                       </button>
                       
-                      {/* Dropdown Menu */}
-                      {openDropdown === (doc.id || index) && (
+                     
+
+                      {openDropdown === (doc.docId || index) && (
+
                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border z-20 animate-in fade-in duration-200">
                           <div className="py-1">
                             <button

@@ -1,13 +1,8 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "./animations.css";
 import "../index.css";
 
-<<<<<<<<< Temporary merge branch 1
-const BackendUrl = "http://localhost:8080/api/documents/list/4";
-=========
 const BackendUrl = "http://localhost:8080/api/documents/";
->>>>>>>>> Temporary merge branch 2
 
 interface Document {
   id: number;
@@ -22,7 +17,6 @@ const RecentPage = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [openDropdown, setOpenDropdown] = useState<number | null>(null);
 
   
   useEffect(() => {
@@ -70,17 +64,7 @@ const RecentPage = () => {
           DMS
         </h1>
 
-        <button className="w-full mb-6 flex items-center gap-2 rounded-xl border bg-white px-4 py-2 shadow hover:bg-gray-50" style={{
-          width: '80%',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          borderRadius: '9999px',
-          padding: '4px 8px',
-          backgroundColor: '#fef3c7',
-          fontWeight: '500',
-          fontSize: '14px'
-        }}>
+         <button className="w-full mb-6 flex items-center gap-2 rounded-xl border bg-white px-4 py-2 shadow hover:bg-gray-50 bounce-in-top">
           Recent
         </button>
       </div>
@@ -117,30 +101,20 @@ const RecentPage = () => {
           </div>
         )}
 
-        {/* Documents List - Gray background like HomePage */}
-        <div className="bg-gray-200 rounded-lg shadow-sm p-6" style={{backgroundColor: '#e5e7eb', borderRadius: '8px', padding: '24px'}}>
-          {!loading && !error && (
-            <div className="space-y-3">
-              {documents.length === 0 ? (
-                <div className="text-center py-12 text-gray-500">
-                  <p>No documents found</p>
-                </div>
-              ) : (
-                documents.map((doc, index) => (
-                  <div
-                    key={doc.id || index}
-                    className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 bg-white"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '12px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '8px',
-                      backgroundColor: 'white',
-                      marginBottom: '8px'
-                    }}
-                  >
+        {/* Documents List */}
+        {!loading && !error && (
+          <div className="space-y-4">
+            {documents.length === 0 ? (
+              <div className="text-center py-12 text-gray-500">
+                <p>No documents found</p>
+              </div>
+            ) : (
+              documents.map((doc, index) => (
+                <div
+                  key={doc.id || index}
+                  className="bg-white rounded-lg shadow-sm border p-4 hover:shadow-md transition-shadow"
+                >
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div className="text-2xl">📄</div>
                       <div>
