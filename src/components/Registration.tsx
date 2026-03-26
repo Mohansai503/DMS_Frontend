@@ -58,7 +58,15 @@ const Registration = () => {
             try {
                 //Call backend controller to generate OTP
                 const response = await fetch(
-                    `http://localhost:8080/otpapi/generate?email=${email}&userName=${username}`
+                    `http://localhost:8080/registration/send-otp`,
+                    { 
+                        method: "POST" ,
+                        headers : {
+                            "Content-type" : "application/json"
+                        }
+                     ,
+                     body : JSON.stringify({userEmailId: email, userName: username} )
+                    }
                 );
 
                 if (!response.ok) {
@@ -111,8 +119,14 @@ const Registration = () => {
 
             //Verify OTP with backend before registration.
             const verifyResponse = await fetch(
-                `http://localhost:8080/otpapi/verify?email=${email}&otp=${otp}`,
-                { method: "POST" }
+                `http://localhost:8080/registration/verify-otp`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ email, otp })
+                }
             );
 
             const msg = await verifyResponse.text();
