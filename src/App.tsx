@@ -25,7 +25,7 @@ function App() {
           <Routes>
             
             <Route path='/reg' element={<Registration/>}></Route>
-            {/* <Route path="/mylogin" element={<MyLogin />} /> */}
+
             <Route path='/login' element={<Login/>}></Route>
             <Route path='/upload' element={<Upload/>}></Route>
             <Route path="/" element={<Navigate to="/login" replace />} />

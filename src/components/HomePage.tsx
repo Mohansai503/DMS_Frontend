@@ -104,8 +104,8 @@ const Home = () => {
         setLoading(false);
       }
     }
-  fetchDocuments();
-},[active]);
+    
+});
 
     /*fetchDocuments();
   }, []);*/
