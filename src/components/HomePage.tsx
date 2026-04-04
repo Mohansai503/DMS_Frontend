@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import "./animations.css";
 //import "../animista.css";
 import { useNavigate } from "react-router-dom";
 
@@ -25,6 +26,9 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [selectedDocForShare, setSelectedDocForShare] = useState<Document | null>(null);
+  const [shareEmail, setShareEmail] = useState("");
   
   const navigate = useNavigate();
 
@@ -109,7 +113,7 @@ const Home = () => {
   }, []);*/
 
   // Close dropdown when clicking outside
-  /*useEffect(() => {
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (!event.target) return;
       
@@ -125,7 +129,7 @@ const Home = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);*/
+  }, []);
 
   const toggleDropdown = (docId: number) => {
     setOpenDropdown(openDropdown === docId ? null : docId);
@@ -137,17 +141,128 @@ const Home = () => {
     
     switch (action) {
       case 'download':
-       
+        handleDownload(doc);
         break;
       case 'view':
-        
+        handleView(doc);
         break;
       case 'restore':
-        
+        handleRestore(doc);
         break;
       case 'share':
-        
+        handleShare(doc);
         break;
+    }
+  };
+
+  const handleDownload = async (doc: Document) => {
+  try {
+    const token = sessionStorage.getItem("token");
+
+    const response = await fetch(
+      `http://localhost:8080/api/documents/view/${doc.docId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Download failed");
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = doc.docName || "document";
+
+    document.body.appendChild(a);
+    a.click();
+
+    a.remove();
+    window.URL.revokeObjectURL(url);
+
+  } catch (error) {
+    console.error("Download error:", error);
+    alert("Download failed");
+  }
+};
+
+  const handleView = (doc: Document) => {
+    console.log("Viewing document:", doc.docName);
+    // Navigate to document viewer and pass document data
+    navigate(`/documents/view/${doc.docId}`, {
+      state: {
+        document: {
+          docId: doc.docId,
+          docName: doc.docName,
+          documentType: doc.documentType || "Unknown",
+          docSize: doc.docSize || "Unknown",
+          docUploadDate: doc.docUploadDate || "Unknown date",
+        }
+      }
+    });
+  };
+
+  const handleRestore = async (doc: Document) => {
+    console.log("Restoring document:", doc.docName);
+    try {
+      const response = await fetch(`http://localhost:8080/api/documents/restore/${doc.docId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": 'Bearer ' + sessionStorage.getItem("token"),
+        }
+      });
+      if (response.ok) {
+        alert(`${doc.docName} restored successfully!`);
+        // Refresh the documents list
+        window.location.reload();
+      } else {
+        alert("Failed to restore document");
+      }
+    } catch (error) {
+      console.error("Restore failed:", error);
+      alert("Error restoring document");
+    }
+  };
+
+  const handleShare = (doc: Document) => {
+    console.log("Sharing document:", doc.docName);
+    setSelectedDocForShare(doc);
+    setShareModalOpen(true);
+  };
+
+  const submitShare = async () => {
+    if (!shareEmail || !selectedDocForShare) return;
+    
+    try {
+      const response = await fetch("http://localhost:8080/api/documents/share", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": 'Bearer ' + sessionStorage.getItem("token"),
+        },
+        body: JSON.stringify({
+          docId: selectedDocForShare.docId,
+          email: shareEmail
+        })
+      });
+      
+      if (response.ok) {
+        alert(`Document shared with ${shareEmail} successfully!`);
+        setShareModalOpen(false);
+        setShareEmail("");
+        setSelectedDocForShare(null);
+      } else {
+        alert("Failed to share document");
+      }
+    } catch (error) {
+      console.error("Share failed:", error);
+      alert("Error sharing document");
     }
   };
 
@@ -292,64 +407,69 @@ const Home = () => {
                         {doc.docUploadDate || doc.createdAt || 'Unknown date'}
                       </p>
                       
-                      <button 
-                        onClick={() => toggleDropdown(doc.docId || index)}
-                        className="text-gray-600 hover:text-gray-800 p-2 rounded-full hover:bg-gray-100 transition-colors"
-                        aria-label="More options"
-                      > Download
-                        {/* <svg 
-                          className="w-5 h-5" 
-                          fill="currentColor" 
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                        </svg> */}
-                      </button>
+                     <div
+                       onClick={() => toggleDropdown(doc.docId || index)}
+                       className="p-1 rounded-full hover:bg-gray-100 text-gray-500 hover:text-gray-700 cursor-pointer"
+                     >
+                     <svg 
+                        className="w-3 h-3" 
+                        fill="currentColor" 
+                        viewBox="0 0 20 20"
+                  >
+                     <circle cx="12" cy="6" r="0.8" />
+                     <circle cx="12" cy="10" r="0.8" />
+                     <circle cx="12" cy="14" r="0.8" />
+                     </svg>
+                     </div>
                       
                      
                       {openDropdown === (doc.docId || index) && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border z-20 animate-in fade-in duration-200">
-                          <div className="py-1">
-                            <button
-                              onClick={() => handleMenuAction('view', doc)}
-                              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                            >
-                              <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                              </svg>
-                              View
-                            </button>
-                            <button
-                              onClick={() => handleMenuAction('restore', doc)}
-                              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                            >
-                              <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                              </svg>
-                              Restore
-                            </button>
-                            <button
-                              onClick={() => handleMenuAction('download', doc)}
-                              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                            >
-                              <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                              </svg>
-                              Download
-                            </button>
-                            <button
-                              onClick={() => handleMenuAction('share', doc)}
-                              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                            >
-                              <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                              </svg>
-                              Share
-                            </button>
-                          </div>
-                        </div>
-                      )}
+  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 overflow-hidden animate-fadeIn">
+
+    {/* View */}
+    <button
+      onClick={() => handleMenuAction("view", doc)}
+      className="flex items-center gap-4 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition-all duration-200 group"
+    >
+      <span className="text-xl">👁️</span>
+      <span className="font-semibold group-hover:text-blue-600">View</span>
+    </button>
+
+    <div className="border-t border-gray-100"></div>
+
+    {/* Download */}
+    <button
+      onClick={() => handleMenuAction("download", doc)}
+      className="flex items-center gap-4 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 transition-all duration-200 group"
+    >
+      <span className="text-xl">⬇</span>
+      <span className="font-semibold group-hover:text-green-600">Download</span>
+    </button>
+
+    <div className="border-t border-gray-100"></div>
+
+    {/* Restore */}
+    <button
+      onClick={() => handleMenuAction("restore", doc)}
+      className="flex items-center gap-4 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-purple-50 transition-all duration-200 group"
+    >
+      <span className="text-xl">🔄</span>
+      <span className="font-semibold group-hover:text-purple-600">Restore</span>
+    </button>
+
+    <div className="border-t border-gray-100"></div>
+
+    {/* Share */}
+    <button
+      onClick={() => handleMenuAction("share", doc)}
+      className="flex items-center gap-4 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 transition-all duration-200 group"
+    >
+      <span className="text-xl">🔗</span>
+      <span className="font-semibold group-hover:text-orange-600">Share</span>
+    </button>
+
+  </div>
+)}
                     </div>
                   </div>
                 ))
@@ -358,6 +478,42 @@ const Home = () => {
           )}
         </div>
       </main>
+
+      {/* Share Modal */}
+      {shareModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl p-6 w-96">
+            <h3 className="text-lg font-semibold mb-4">Share Document</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Share "{selectedDocForShare?.docName}" with other users
+            </p>
+            <input
+              type="email"
+              placeholder="Enter email address"
+              value={shareEmail}
+              onChange={(e) => setShareEmail(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4 focus:outline-none focus:border-blue-500"
+            />
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShareModalOpen(false);
+                  setShareEmail("");
+                }}
+                className="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={submitShare}
+                className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+              >
+                Share
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

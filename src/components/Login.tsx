@@ -83,10 +83,10 @@ const Login = () => {
         
 
 
-            /*console.log("OTP sent successfully to", email);
+            console.log("OTP sent successfully to", email);
             alert("OTP sent to your email!");
             setOtpSent(true);
-            setOtpVerified(false);*/
+            setOtpVerified(false);
 
         
             } catch (error) {

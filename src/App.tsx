@@ -11,6 +11,7 @@ import LoginFailure from './components/LoginFailure';
 //import MyLogin from './components/MyLogin';
 import DemoGreeting from './components/DemoLogin';
 import HomePage from './components/HomePage';
+import DocumentViewer from './components/DocumentViewer';
 
 
 import RecentPage from './components/RecentPage';
@@ -37,6 +38,7 @@ function App() {
             <Route path='/homepage' element={<HomePage/>}></Route>
            <Route path='/demologin' element={<DemoGreeting/>}></Route> 
             <Route path='/recent' element={<RecentPage/>}></Route>
+            <Route path="/documents/view/:docId" element={<DocumentViewer />} />
            
 
        
